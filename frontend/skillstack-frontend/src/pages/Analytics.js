@@ -6,7 +6,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import { StatusPieChart, PlatformBarChart, ResourceTypeChart } from '../components/charts/StatsChart';
 import ActivityLog from '../components/ActivityLog';
-import { autoCategorizeskill } from '../utils/aiHelpers';
 
 const Analytics = () => {
   const { stats, loading: statsLoading, error: statsError } = useSkillStats();

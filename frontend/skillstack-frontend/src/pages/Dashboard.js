@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Plus, Book, Clock, Trophy, TrendingUp, Calendar } from 'lucide-react';
 import { useSkillStats, useSkills } from '../hooks/useSkills';
 import { useActivities } from '../hooks/useActivities';
@@ -10,7 +10,6 @@ import SkillRecommendations from '../components/SkillRecommendations';
 import { StatusPieChart } from '../components/charts/StatsChart';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const { stats, loading: statsLoading, error: statsError } = useSkillStats();
   const { skills, loading: skillsLoading, error: skillsError, createSkill } = useSkills({ 
     ordering: '-created_at'
