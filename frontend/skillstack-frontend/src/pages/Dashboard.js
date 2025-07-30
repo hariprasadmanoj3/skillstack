@@ -1,22 +1,43 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Book, Clock, Trophy, TrendingUp, Calendar } from 'lucide-react';
 import { useSkillStats, useSkills } from '../hooks/useSkills';
 import { useActivities } from '../hooks/useActivities';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SkillCard from '../components/SkillCard';
+import SkillRecommendations from '../components/SkillRecommendations';
 import { StatusPieChart } from '../components/charts/StatsChart';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { stats, loading: statsLoading, error: statsError } = useSkillStats();
-  const { skills, loading: skillsLoading, error: skillsError } = useSkills({ 
+  const { skills, loading: skillsLoading, error: skillsError, createSkill } = useSkills({ 
     ordering: '-created_at'
   });
   const { activities } = useActivities();
 
   const recentSkills = skills.slice(0, 6);
   const recentActivities = activities.slice(0, 5);
+
+  const handleAddRecommendation = async (recommendation) => {
+    try {
+      const skillData = {
+        name: recommendation.name,
+        description: recommendation.description,
+        resource_type: recommendation.resource_type || 'course',
+        platform: recommendation.platform || 'other',
+        difficulty: 1,
+        estimated_hours: 0,
+        tags: recommendation.reason || ''
+      };
+      
+      await createSkill(skillData);
+      // Optionally show success message or navigate
+    } catch (err) {
+      alert('Failed to add recommended skill. Please try again.');
+    }
+  };
 
   if (statsLoading || skillsLoading) {
     return <LoadingSpinner text="Loading dashboard..." />;
@@ -39,7 +60,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Track your learning journey</p>
+          <p className="text-gray-600 mt-1">Track your learning journey with AI insights</p>
         </div>
         <Link to="/add-skill" className="btn-primary">
           <Plus className="w-4 h-4 mr-2" />
@@ -97,6 +118,14 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Recommendations */}
+      {skills.length > 0 && (
+        <SkillRecommendations 
+          skills={skills} 
+          onAddRecommendation={handleAddRecommendation}
+        />
+      )}
 
       {/* Progress and Charts */}
       {stats && stats.total_skills > 0 && (

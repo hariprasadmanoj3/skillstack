@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { RESOURCE_TYPES, PLATFORMS, DIFFICULTY_LEVELS } from '../utils/constants';
 import { useSkills } from '../hooks/useSkills';
+import AutoCategorization from '../components/AutoCategorization';
 
 const AddSkill = () => {
   const navigate = useNavigate();
@@ -25,6 +26,19 @@ const AddSkill = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleAcceptCategorySuggestion = (suggestedCategory) => {
+    const currentTags = formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [];
+    const categoryTag = suggestedCategory.toLowerCase().replace(/\s+/g, '-');
+    
+    if (!currentTags.includes(categoryTag)) {
+      const newTags = [...currentTags, categoryTag].filter(tag => tag).join(', ');
+      setFormData(prev => ({
+        ...prev,
+        tags: newTags
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -63,7 +77,7 @@ const AddSkill = () => {
         </button>
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Add New Skill</h1>
-          <p className="text-gray-600 mt-1">Create a new learning goal</p>
+          <p className="text-gray-600 mt-1">Create a new learning goal with AI assistance</p>
         </div>
       </div>
 
@@ -102,6 +116,14 @@ const AddSkill = () => {
               disabled={loading}
             />
           </div>
+
+          {/* AI Auto-categorization */}
+          <AutoCategorization
+            skillName={formData.name}
+            description={formData.description}
+            tags={formData.tags}
+            onAcceptSuggestion={handleAcceptCategorySuggestion}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -208,6 +230,7 @@ const AddSkill = () => {
           <div>
             <label htmlFor="tags" className="form-label">
               Tags
+              <span className="text-xs text-gray-500 ml-1">(AI suggestions will appear above)</span>
             </label>
             <input
               type="text"
