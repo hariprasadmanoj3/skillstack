@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import { StatusPieChart, PlatformBarChart, ResourceTypeChart } from '../components/charts/StatsChart';
 import ActivityLog from '../components/ActivityLog';
+import Timeline from '../components/Timeline';
 
 const Analytics = () => {
   const { stats, loading: statsLoading, error: statsError } = useSkillStats();
@@ -182,6 +183,10 @@ const Analytics = () => {
         </div>
       </div>
 
+      {/* Timeline View */}
+      <Timeline />
+
+
       {/* Activity Log */}
       <ActivityLog />
 
@@ -201,5 +206,16 @@ const Analytics = () => {
     </div>
   );
 };
+
+<button
+  onClick={() => {
+    const summary = generateWeeklySummary(skills, activities);
+    sendWeeklySummaryEmail(summary);
+    alert('Weekly summary sent! Check console for details.');
+  }}
+  className="btn-secondary mb-6"
+>
+  📧 Generate Weekly Summary
+</button>
 
 export default Analytics;
