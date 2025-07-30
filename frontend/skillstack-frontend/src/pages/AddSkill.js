@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { RESOURCE_TYPES, PLATFORMS, DIFFICULTY_LEVELS } from '../utils/constants';
+import { useSkills } from '../hooks/useSkills';
 
 const AddSkill = () => {
   const navigate = useNavigate();
+  const { createSkill } = useSkills();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -24,11 +27,28 @@ const AddSkill = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // TODO: Implement API call
-    navigate('/skills');
+    setLoading(true);
+
+    try {
+      // Clean up the data before sending
+      const skillData = {
+        ...formData,
+        estimated_hours: formData.estimated_hours ? parseInt(formData.estimated_hours) : 0,
+        difficulty: parseInt(formData.difficulty),
+      };
+
+      await createSkill(skillData);
+      navigate('/skills', { 
+        state: { message: 'Skill added successfully!' }
+      });
+    } catch (err) {
+      console.error('Error creating skill:', err);
+      alert('Failed to create skill. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,6 +83,7 @@ const AddSkill = () => {
               required
               className="form-input"
               placeholder="e.g., React.js Fundamentals"
+              disabled={loading}
             />
           </div>
 
@@ -78,6 +99,7 @@ const AddSkill = () => {
               rows={3}
               className="form-input"
               placeholder="What will you learn from this resource?"
+              disabled={loading}
             />
           </div>
 
@@ -93,6 +115,7 @@ const AddSkill = () => {
                 onChange={handleChange}
                 required
                 className="form-input"
+                disabled={loading}
               >
                 <option value="">Select resource type</option>
                 {RESOURCE_TYPES.map((type) => (
@@ -114,6 +137,7 @@ const AddSkill = () => {
                 onChange={handleChange}
                 required
                 className="form-input"
+                disabled={loading}
               >
                 <option value="">Select platform</option>
                 {PLATFORMS.map((platform) => (
@@ -137,6 +161,7 @@ const AddSkill = () => {
               onChange={handleChange}
               className="form-input"
               placeholder="https://..."
+              disabled={loading}
             />
           </div>
 
@@ -151,6 +176,7 @@ const AddSkill = () => {
                 value={formData.difficulty}
                 onChange={handleChange}
                 className="form-input"
+                disabled={loading}
               >
                 {DIFFICULTY_LEVELS.map((level) => (
                   <option key={level.value} value={level.value}>
@@ -171,9 +197,10 @@ const AddSkill = () => {
                 value={formData.estimated_hours}
                 onChange={handleChange}
                 min="0"
-                step="0.5"
+                step="1"
                 className="form-input"
                 placeholder="0"
+                disabled={loading}
               />
             </div>
           </div>
@@ -190,6 +217,7 @@ const AddSkill = () => {
               onChange={handleChange}
               className="form-input"
               placeholder="javascript, frontend, react (comma-separated)"
+              disabled={loading}
             />
           </div>
 
@@ -198,11 +226,26 @@ const AddSkill = () => {
               type="button"
               onClick={() => navigate(-1)}
               className="btn-secondary"
+              disabled={loading}
             >
               Cancel
             </button>
-            <button type="submit" className="btn-primary">
-              Add Skill
+            <button 
+              type="submit" 
+              className="btn-primary flex items-center"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Add Skill
+                </>
+              )}
             </button>
           </div>
         </form>
