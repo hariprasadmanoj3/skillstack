@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Sum
 
 class Skill(models.Model):
     RESOURCE_TYPE_CHOICES = [
@@ -59,11 +60,37 @@ class Skill(models.Model):
     def __str__(self):
         return self.name
     
+    def update_hours_and_status(self):
+        """Update hours spent and status based on activities"""
+        total_hours = self.activities.aggregate(
+            total=Sum('hours_spent')
+        )['total'] or 0
+        
+        self.hours_spent = total_hours
+        
+        # Auto-update status based on progress
+        if total_hours == 0:
+            self.status = 'not_started'
+        elif self.estimated_hours > 0 and total_hours >= self.estimated_hours:
+            self.status = 'completed'
+        elif total_hours > 0:
+            if self.status == 'not_started':
+                self.status = 'in_progress'
+        
+        self.save(update_fields=['hours_spent', 'status', 'updated_at'])
+    
     @property
     def progress_percentage(self):
         if self.estimated_hours > 0:
             return min(100, (float(self.hours_spent) / self.estimated_hours) * 100)
-        return 0 if self.status == 'not_started' else 100 if self.status == 'completed' else 50
+        else:
+            # If no estimated hours, base on status
+            if self.status == 'completed':
+                return 100
+            elif self.status == 'in_progress':
+                return 50
+            else:
+                return 0
 
 class LearningActivity(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE, related_name='activities')
@@ -80,3 +107,14 @@ class LearningActivity(models.Model):
     
     def __str__(self):
         return f"{self.skill.name} - {self.date} ({self.hours_spent}h)"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Update the skill's hours and status after saving activity
+        self.skill.update_hours_and_status()
+    
+    def delete(self, *args, **kwargs):
+        skill = self.skill
+        super().delete(*args, **kwargs)
+        # Update the skill's hours and status after deleting activity
+        skill.update_hours_and_status()

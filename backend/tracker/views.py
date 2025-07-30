@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, Avg
 from .models import Skill, LearningActivity
 from .serializers import SkillSerializer, SkillListSerializer, LearningActivitySerializer
 
@@ -42,6 +42,11 @@ class SkillViewSet(viewsets.ModelViewSet):
         
         return queryset
     
+    def perform_update(self, serializer):
+        skill = serializer.save()
+        # Update hours and status after manual update
+        skill.update_hours_and_status()
+    
     @action(detail=False, methods=['get'])
     def stats(self, request):
         skills = Skill.objects.all()
@@ -49,6 +54,8 @@ class SkillViewSet(viewsets.ModelViewSet):
         total_skills = skills.count()
         completed_skills = skills.filter(status='completed').count()
         in_progress_skills = skills.filter(status='in_progress').count()
+        not_started_skills = skills.filter(status='not_started').count()
+        paused_skills = skills.filter(status='paused').count()
         total_hours = skills.aggregate(total=Sum('hours_spent'))['total'] or 0
         
         # Platform breakdown
@@ -60,23 +67,44 @@ class SkillViewSet(viewsets.ModelViewSet):
             if count > 0:
                 platform_stats[platform_name] = count
         
-        # Status breakdown
-        status_stats = {}
-        for status_choice in Skill.STATUS_CHOICES:
-            status_code = status_choice[0]
-            status_name = status_choice[1]
-            count = skills.filter(status=status_code).count()
+        # Resource type breakdown (category-wise)
+        resource_type_stats = {}
+        for resource_choice in Skill.RESOURCE_TYPE_CHOICES:
+            resource_code = resource_choice[0]
+            resource_name = resource_choice[1]
+            count = skills.filter(resource_type=resource_code).count()
             if count > 0:
-                status_stats[status_name] = count
+                resource_type_stats[resource_name] = count
+        
+        # Status breakdown
+        status_stats = {
+            'Not Started': not_started_skills,
+            'In Progress': in_progress_skills,
+            'Completed': completed_skills,
+            'Paused': paused_skills,
+        }
+        # Remove zero values
+        status_stats = {k: v for k, v in status_stats.items() if v > 0}
+        
+        # Additional insights
+        avg_hours_per_skill = skills.aggregate(avg=Avg('hours_spent'))['avg'] or 0
+        most_used_platform = max(platform_stats.items(), key=lambda x: x[1])[0] if platform_stats else None
+        most_used_resource_type = max(resource_type_stats.items(), key=lambda x: x[1])[0] if resource_type_stats else None
         
         return Response({
             'total_skills': total_skills,
             'completed_skills': completed_skills,
             'in_progress_skills': in_progress_skills,
+            'not_started_skills': not_started_skills,
+            'paused_skills': paused_skills,
             'completion_rate': round((completed_skills / total_skills * 100) if total_skills > 0 else 0, 2),
             'total_hours': float(total_hours),
+            'avg_hours_per_skill': round(float(avg_hours_per_skill), 2),
             'platform_breakdown': platform_stats,
+            'resource_type_breakdown': resource_type_stats,
             'status_breakdown': status_stats,
+            'most_used_platform': most_used_platform,
+            'most_used_resource_type': most_used_resource_type,
         })
 
 class LearningActivityViewSet(viewsets.ModelViewSet):
@@ -84,7 +112,7 @@ class LearningActivityViewSet(viewsets.ModelViewSet):
     serializer_class = LearningActivitySerializer
     
     def get_queryset(self):
-        queryset = LearningActivity.objects.all()
+        queryset = LearningActivity.objects.select_related('skill').all()
         
         # Filter by skill
         skill_id = self.request.query_params.get('skill', None)

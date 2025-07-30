@@ -6,6 +6,7 @@ import { STATUS_OPTIONS, PLATFORMS, RESOURCE_TYPES } from '../utils/constants';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SkillCard from '../components/SkillCard';
+import SkillEditModal from '../components/SkillEditModal';
 
 const Skills = () => {
   const [filters, setFilters] = useState({
@@ -14,14 +15,31 @@ const Skills = () => {
     platform: '',
     resource_type: ''
   });
+  const [editingSkill, setEditingSkill] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { skills, loading, error, refetch, deleteSkill } = useSkills(filters);
+  const { skills, loading, error, refetch, deleteSkill, updateSkill } = useSkills(filters);
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({
       ...prev,
       [key]: value
     }));
+  };
+
+  const handleEdit = (skill) => {
+    setEditingSkill(skill);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async (id, skillData) => {
+    try {
+      await updateSkill(id, skillData);
+      setIsEditModalOpen(false);
+      setEditingSkill(null);
+    } catch (err) {
+      throw err;
+    }
   };
 
   const handleDelete = async (skill) => {
@@ -175,7 +193,7 @@ const Skills = () => {
                 <SkillCard
                   key={skill.id}
                   skill={skill}
-                  onEdit={() => {}} // TODO: Implement edit
+                  onEdit={handleEdit}
                   onDelete={handleDelete}
                 />
               ))}
@@ -183,6 +201,17 @@ const Skills = () => {
           </>
         )}
       </div>
+
+      {/* Edit Modal */}
+      <SkillEditModal
+        skill={editingSkill}
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingSkill(null);
+        }}
+        onSave={handleSaveEdit}
+      />
     </div>
   );
 };

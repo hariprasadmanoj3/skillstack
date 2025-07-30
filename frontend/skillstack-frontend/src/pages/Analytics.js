@@ -4,7 +4,7 @@ import { useSkillStats } from '../hooks/useSkills';
 import { useActivities } from '../hooks/useActivities';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
-import { StatusPieChart, PlatformBarChart } from '../components/charts/StatsChart';
+import { StatusPieChart, PlatformBarChart, ResourceTypeChart } from '../components/charts/StatsChart';
 import ActivityLog from '../components/ActivityLog';
 
 const Analytics = () => {
@@ -92,7 +92,7 @@ const Analytics = () => {
 
       {/* Charts Section */}
       {stats && (stats.total_skills > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Status Distribution */}
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Skills by Status</h2>
@@ -104,17 +104,23 @@ const Analytics = () => {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Skills by Platform</h2>
             <PlatformBarChart data={stats.platform_breakdown} />
           </div>
+
+          {/* Resource Type Distribution (Category-wise) */}
+          <div className="card">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Category Breakdown</h2>
+            <ResourceTypeChart data={stats.resource_type_breakdown} />
+          </div>
         </div>
       )}
 
       {/* Learning Insights */}
       <div className="card">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Learning Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <h3 className="text-sm font-medium text-blue-900 mb-1">Average per Skill</h3>
             <p className="text-2xl font-bold text-blue-600">
-              {stats?.total_skills > 0 ? (stats.total_hours / stats.total_skills).toFixed(1) : 0}h
+              {stats?.avg_hours_per_skill || 0}h
             </p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
@@ -124,8 +130,16 @@ const Analytics = () => {
             </p>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <h3 className="text-sm font-medium text-purple-900 mb-1">Recent Activities</h3>
-            <p className="text-2xl font-bold text-purple-600">{recentActivities.length}</p>
+            <h3 className="text-sm font-medium text-purple-900 mb-1">Most Used Platform</h3>
+            <p className="text-lg font-bold text-purple-600">
+              {stats?.most_used_platform || 'N/A'}
+            </p>
+          </div>
+          <div className="text-center p-4 bg-orange-50 rounded-lg">
+            <h3 className="text-sm font-medium text-orange-900 mb-1">Top Category</h3>
+            <p className="text-lg font-bold text-orange-600">
+              {stats?.most_used_resource_type || 'N/A'}
+            </p>
           </div>
         </div>
       </div>
