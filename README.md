@@ -6,13 +6,12 @@
 ![React](https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react)
 ![Django](https://img.shields.io/badge/Django-4.x-092E20?style=flat-square&logo=django)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?style=flat-square&logo=postgresql)
 
 ## 🎯 Overview
 
 SkillStack is a modern web application designed to help learners track their educational journey across multiple platforms and resource types. With intelligent progress tracking, interactive analytics, and AI-powered recommendations, it transforms how you manage and visualize your learning goals.
 
-### ✨ Key Features
+## ✨ Key Features
 
 **📊 Smart Progress Tracking**
 - Automatic progress calculation based on logged learning activities
@@ -36,36 +35,14 @@ SkillStack is a modern web application designed to help learners track their edu
 - Fast, real-time updates without page refreshes
 - Professional data visualization with interactive charts
 
-## 🛠️ Tech Stack
-
-### Frontend
-- **React.js 18** - Modern UI library with hooks
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Router** - Client-side routing
-- **Recharts** - Interactive data visualization
-- **Lucide React** - Beautiful icons
-- **Axios** - HTTP client for API calls
-
-### Backend
-- **Django 4.x** - Python web framework
-- **Django REST Framework** - Powerful API development
-- **PostgreSQL** - Robust relational database
-- **Python Decouple** - Environment configuration
-
-### Development Tools
-- **Vite/Create React App** - Fast development server
-- **Git** - Version control
-- **npm/pip** - Package management
-
-## 🚀 Quick Start
+## 🚀 Quick Local Setup
 
 ### Prerequisites
 - **Python 3.8+** with pip
 - **Node.js 16+** with npm
-- **PostgreSQL 12+**
-- **Git**
+- **PostgreSQL 12+** (or SQLite for development)
 
-### 1. Clone the Repository
+### 1. Clone Repository
 ```bash
 git clone https://github.com/hariprasadmanoj3/skillstack.git
 cd skillstack
@@ -73,129 +50,67 @@ cd skillstack
 
 ### 2. Backend Setup
 ```bash
-# Navigate to backend directory
 cd backend
-
-# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your database credentials
-
-# Run migrations
-python manage.py makemigrations
+# Use SQLite for quick setup (edit settings.py to enable)
 python manage.py migrate
-
-# Create superuser (optional)
-python manage.py createsuperuser
-
-# Start development server
 python manage.py runserver
 ```
 
 ### 3. Frontend Setup
 ```bash
-# Navigate to frontend directory (new terminal)
 cd frontend/skillstack-frontend
-
-# Install dependencies
 npm install
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your API URL
-
-# Start development server
 npm start
 ```
 
-### 4. Access the Application
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000/api/
-- **Admin Panel**: http://localhost:8000/admin/
+### 4. Optional Demo Data
+```bash
+cd backend
+python manage.py shell < create_demo_data.py
+```
 
-## 📖 Usage Guide
+**🌐 Access:** http://localhost:3000
 
-### Adding Your First Skill
+## 📊 Feature Showcase
 
-1. **Navigate to "Add Skill"** from the dashboard
-2. **Enter basic information**:
-   - Skill name (e.g., "React.js Fundamentals")
-   - Description of what you'll learn
-   - Resource type (Course, Video, Article, etc.)
-   - Platform (Udemy, YouTube, Coursera, etc.)
-3. **Set learning parameters**:
-   - Difficulty level (Beginner to Expert)
-   - Estimated hours to complete
-   - Resource URL (optional)
-4. **AI Suggestions**: The system will automatically suggest relevant tags
-5. **Save and start tracking!**
+### Dashboard Analytics
+- Real-time learning statistics
+- Interactive pie and bar charts
+- AI-powered learning insights
+- Weekly progress tracking
 
-### Logging Learning Activities
+### Smart Skill Management
+- Auto-categorization suggestions
+- Progress tracking with visual indicators
+- Notes and tags for organization
+- Platform and difficulty tracking
 
-1. **Go to Analytics page**
-2. **Click "Log Activity"**
-3. **Record your session**:
-   - Select the skill you worked on
-   - Date of learning session
-   - Hours spent (e.g., 2.5 hours)
-   - Notes about what you learned
-4. **Progress updates automatically** based on your logged hours
+### Learning Activity Logging
+- Time tracking with decimal precision
+- Detailed notes for each session
+- Timeline view of learning activities
+- Automatic progress updates
 
-### Understanding Your Analytics
+## 🛠️ Tech Stack
 
-**Dashboard Overview**
-- **Total Skills**: All skills you're tracking
-- **Completion Rate**: Percentage of completed skills
-- **Weekly Hours**: Learning time this week
-- **AI Recommendations**: Personalized skill suggestions
+**Frontend:** React.js 18, Tailwind CSS, Recharts, Lucide Icons  
+**Backend:** Django 4.2, Django REST Framework, PostgreSQL  
+**AI Features:** Rule-based categorization and recommendations  
+**Charts:** Recharts with custom styling and animations
 
-**Charts & Insights**
-- **Status Pie Chart**: Visual breakdown of skill progress
-- **Platform Analysis**: Which learning platforms you prefer
-- **Category Breakdown**: Types of resources you use most
-- **Learning Streaks**: Your consistency patterns
-
-## 🎯 Feature Breakdown
-
-### Core Functionality
-- ✅ **Skill Management**: Add, edit, delete learning goals
-- ✅ **Progress Tracking**: Automatic progress calculation
-- ✅ **Activity Logging**: Track learning sessions with notes
-- ✅ **Real-time Updates**: Instant progress and status updates
-
-### Analytics & Insights
-- ✅ **Interactive Charts**: Pie charts, bar graphs, progress bars
-- ✅ **Learning Statistics**: Averages, totals, completion rates
-- ✅ **Platform Analysis**: Usage patterns across learning platforms
-- ✅ **Time Tracking**: Daily, weekly, and total learning hours
-
-### AI Features (100% Free)
-- ✅ **Auto-categorization**: Smart skill categorization using keywords
-- ✅ **Recommendations**: Suggested skills based on learning patterns
-- ✅ **Pattern Recognition**: Identifies preferences and learning habits
-- ✅ **Confidence Scoring**: AI confidence levels for suggestions
-
-### User Experience
-- ✅ **Responsive Design**: Works perfectly on mobile and desktop
-- ✅ **Intuitive Navigation**: Easy-to-use interface
-- ✅ **Fast Performance**: Real-time updates without page reloads
-- ✅ **Professional UI**: Clean, modern design with smooth animations
-
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
 skillstack/
 ├── backend/                 # Django REST API
-│   ├── config/             # Django settings
-│   ├── tracker/            # Main app with models & views
+│   ├── config/             # Settings and configuration
+│   ├── tracker/            # Main application logic
 │   ├── requirements.txt    # Python dependencies
-│   └── manage.py
+│   └── create_demo_data.py # Demo data script
 ├── frontend/               # React application
 │   └── skillstack-frontend/
 │       ├── src/
@@ -203,160 +118,75 @@ skillstack/
 │       │   ├── pages/      # Main application pages
 │       │   ├── hooks/      # Custom React hooks
 │       │   ├── services/   # API integration
-│       │   ├── utils/      # Helper functions & AI logic
-│       │   └── context/    # React context providers
-│       ├── package.json
-│       └── tailwind.config.js
-├── docs/                   # Documentation
-├── .gitignore
+│       │   └── utils/      # AI helpers and utilities
+│       └── package.json
+├── docs/                   # Comprehensive documentation
+│   ├── INSTALLATION.md     # Setup guide
+│   ├── API.md             # API documentation
+│   ├── USER_GUIDE.md      # Usage instructions
+│   └── CONTRIBUTING.md    # Development guide
 └── README.md
 ```
 
-## 🔧 Configuration
+## 🎮 Demo Features
 
-### Environment Variables
+**Try these features locally:**
+1. **Add Skills** - Test AI auto-categorization
+2. **Log Activities** - Watch progress update automatically  
+3. **View Analytics** - Interactive charts and insights
+4. **AI Recommendations** - Personalized skill suggestions
+5. **Timeline View** - Calendar-style activity overview
 
-**Backend (.env)**
-```env
-SECRET_KEY=your-django-secret-key
-DEBUG=True
-DB_NAME=skillstack_db
-DB_USER=postgres
-DB_PASSWORD=your-password
-DB_HOST=localhost
-DB_PORT=5432
-```
+## 🚀 Deployment Ready
 
-**Frontend (.env)**
-```env
-REACT_APP_API_BASE_URL=http://localhost:8000/api
-```
+**Included deployment configurations for:**
+- **Render** (Backend) - Complete with build scripts
+- **Vercel** (Frontend) - One-click deploy ready
+- **Railway** (Alternative backend) - Configuration included
+- **Environment files** - Production-ready templates
 
-### Database Setup
+## 📖 Documentation
 
-**PostgreSQL**
-```sql
-CREATE DATABASE skillstack_db;
-CREATE USER skillstack_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE skillstack_db TO skillstack_user;
-```
+- **[Installation Guide](docs/INSTALLATION.md)** - Detailed setup instructions
+- **[API Documentation](docs/API.md)** - Complete endpoint reference
+- **[User Guide](docs/USER_GUIDE.md)** - Feature walkthrough
+- **[Contributing](docs/CONTRIBUTING.md)** - Development guidelines
 
-**SQLite (Alternative)**
-```python
-# In settings.py, uncomment SQLite configuration for simpler setup
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-```
+## 🎯 AI Features (100% Free)
 
-## 📊 API Documentation
+**Auto-Categorization:**
+- Analyzes skill names and descriptions
+- Suggests relevant categories with confidence scores
+- Pattern matching for technology domains
 
-### Skills Endpoints
-- `GET /api/skills/` - List all skills with filtering
-- `POST /api/skills/` - Create new skill
-- `GET /api/skills/{id}/` - Get specific skill details
-- `PUT /api/skills/{id}/` - Update skill
-- `DELETE /api/skills/{id}/` - Delete skill
-- `GET /api/skills/stats/` - Get dashboard statistics
-
-### Activities Endpoints
-- `GET /api/activities/` - List learning activities
-- `POST /api/activities/` - Log new learning session
-- `PUT /api/activities/{id}/` - Update activity
-- `DELETE /api/activities/{id}/` - Delete activity
-
-### Query Parameters
-```
-GET /api/skills/?status=in_progress&platform=udemy&search=react
-GET /api/activities/?skill=1&date_from=2025-01-01
-```
+**Smart Recommendations:**
+- Based on completed skills and learning patterns
+- Platform preference analysis
+- Complementary skill suggestions
 
 ## 🧪 Testing
 
-### Manual Testing Checklist
-- [ ] Add new skill with all fields
-- [ ] Log learning activities for skills
-- [ ] Verify progress updates automatically
-- [ ] Test skill editing and deletion
-- [ ] Check analytics charts update
-- [ ] Verify AI recommendations appear
-- [ ] Test responsive design on mobile
-- [ ] Confirm data persistence
-
-### API Testing
 ```bash
-# Test skills endpoint
-curl -X GET http://localhost:8000/api/skills/
+# Backend tests
+cd backend && python manage.py test
 
-# Test creating a skill
-curl -X POST http://localhost:8000/api/skills/ \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test Skill","resource_type":"course","platform":"udemy"}'
+# Frontend tests  
+cd frontend/skillstack-frontend && npm test
+
+# Manual testing with demo data
+python manage.py shell < create_demo_data.py
 ```
-
-## 🚀 Deployment Options
-
-### Option 1: Railway (Recommended)
-1. Connect GitHub repository to Railway
-2. Configure environment variables
-3. Deploy backend and frontend separately
-4. Set up PostgreSQL database
-
-### Option 2: Vercel + Railway
-1. Deploy frontend to Vercel
-2. Deploy backend to Railway
-3. Configure CORS settings
-4. Update API URLs
-
-### Option 3: Traditional VPS
-1. Set up Ubuntu server
-2. Install Nginx, PostgreSQL
-3. Configure gunicorn for Django
-4. Build and serve React app
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how to get started:
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes** and test thoroughly
-4. **Commit your changes**: `git commit -m 'Add amazing feature'`
-5. **Push to the branch**: `git push origin feature/amazing-feature`
-6. **Open a Pull Request**
-
-### Development Guidelines
-- Follow existing code style and patterns
-- Add comments for complex logic
-- Test all new features thoroughly
-- Update documentation as needed
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- **React Team** for the amazing framework
-- **Django Team** for the robust backend framework
-- **Tailwind CSS** for the beautiful styling system
-- **Recharts** for interactive data visualization
-- **Lucide** for the beautiful icon set
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-
-1. **Check the documentation** above
-2. **Search existing issues** on GitHub
-3. **Create a new issue** with detailed information
-4. **Contact**: hariprasadmanoj3@github.com
+Built with modern web technologies and best practices for personal learning management.
 
 ---
 
-**Built with ❤️ using React, Django, and modern web technologies.**
+**🚀 Ready to track your learning journey with AI-powered insights!**
 
-*Last updated: July 30, 2025*
+*Project completed: July 31, 2025*
