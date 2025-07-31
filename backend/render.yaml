@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: skillstack-backend
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    disk:
+      name: skillstack-data
+      mountPath: /data
+      sizeGB: 1
+
+databases:
+  - name: skillstack-db
+    databaseName: skillstack
+    user: skillstack_user
