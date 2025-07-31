@@ -152,7 +152,7 @@ skillstack/
 - **[User Guide](docs/USER_GUIDE.md)** - Feature walkthrough
 - **[Contributing](docs/CONTRIBUTING.md)** - Development guidelines
 
-## 🎯 AI Features (100% Free)
+## 🎯 AI Features 
 
 **Auto-Categorization:**
 - Analyzes skill names and descriptions
